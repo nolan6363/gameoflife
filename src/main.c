@@ -3,13 +3,6 @@
 #include <stdlib.h>
 #include "game.h"
 
-enum boundary_types {
-    EDGE,
-    TORUS,
-    MIRROR,
-    RIM
-};
-
 int main(int argc, char ** argv) {
     // Récupérer les arguments 
     int width = 320;
@@ -51,7 +44,18 @@ int main(int argc, char ** argv) {
     }
 
     World * world = allocate_world(width, height);
+    World * buffer = allocate_world(width, height);
+    
+    if (input_file) load_world_from_file(world, input_file);
+
     print_game_state(world);
+    
+    for (int i = 0; i < generations / 2; i++) {
+        next_generation(world, buffer, boundaries);
+        print_game_state(buffer);
+        next_generation(buffer, world, boundaries);
+        print_game_state(world);
+    }
     return 0;
 }
 
