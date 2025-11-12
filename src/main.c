@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #include "game.h"
 
 int main(int argc, char ** argv) {
@@ -48,14 +49,25 @@ int main(int argc, char ** argv) {
     
     if (input_file) load_world_from_file(world, input_file);
 
-    print_game_state(world);
+//    print_game_state(world);
     
+    clock_t t; 
+    t = clock();
+
     for (int i = 0; i < generations / 2; i++) {
         next_generation(world, buffer, boundaries);
-        print_game_state(buffer);
+//        print_game_state(buffer);
         next_generation(buffer, world, boundaries);
-        print_game_state(world);
+//        print_game_state(world);
     }
+
+    t = clock() - t; 
+    double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds 
+    
+    printf("%d generations took %f seconds to execute \n", generations, time_taken); 
+    printf("This is %f ms per generations, %f FPS. \n", time_taken / generations * 1000.0f, 1.0f / (time_taken / generations));
+    
+//    print_game_state(world);
     return 0;
 }
 
